@@ -78,6 +78,9 @@ h1,h2,h3,.disp{font-family:'Cinzel',serif}
 .float-lang-selector .lang-btn{width:34px;height:34px;box-shadow:0 2px 10px rgba(0,0,0,.35)}
 @media(max-width:640px){.float-lang-selector{top:10px;right:10px}.float-lang-selector .lang-btn{width:30px;height:30px}}
 
+#wm{position:fixed;inset:0;pointer-events:none;z-index:5;overflow:hidden}
+.wmt{position:absolute;font-family:'Space Mono',monospace;font-size:12px;color:rgba(212,175,82,.06);white-space:nowrap;transform:rotate(-35deg);pointer-events:none}
+
 #musicToggle{position:fixed;bottom:84px;right:14px;z-index:9500;width:40px;height:40px;border-radius:50%;background:rgba(8,10,7,.85);border:1px solid rgba(156,122,40,.3);color:var(--goldl);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;backdrop-filter:blur(3px);box-shadow:0 2px 10px rgba(0,0,0,.3);touch-action:manipulation;transition:border-color .2s}
 #musicToggle:hover{border-color:var(--goldl)}
 @media(max-width:640px){#musicToggle{bottom:78px;right:10px;width:36px;height:36px;font-size:14px}}
@@ -312,6 +315,7 @@ input.mono{font-family:'Space Mono',monospace;font-size:16px;letter-spacing:.28e
   </button>
 </div>
 
+<div id="wm"></div>
 <button id="musicToggle" type="button" title="Musique">🔊</button>
 <div id="chronoBadge">00:00</div>
 <audio id="bgMusic" loop preload="none">
@@ -612,6 +616,7 @@ const I18N = {
 fr:{
   warn_title:"Propriété Intellectuelle",
   warn_project:"Les 7 Portes de Xibalba — © 2026",
+  wm:"© GRASON Sabrina & VEAU Yann · Les 7 Portes de Xibalba · Usage Personnel · Non Reproductible",
   warn_content:"Ce jeu est une <strong>création originale protégée par les droits d'auteur</strong>.<br>Toute reproduction, redistribution ou revente est <strong>strictement interdite</strong> sans autorisation écrite.",
   warn_accept:"Accepter",
   warn_refuse:"Refuser",
@@ -705,6 +710,7 @@ fr:{
 es:{
   warn_title:"Propiedad Intelectual",
   warn_project:"Las 7 Puertas de Xibalbá — © 2026",
+  wm:"© GRASON Sabrina & VEAU Yann · Las 7 Puertas de Xibalbá · Uso Personal · No Reproducible",
   warn_content:"Este juego es una <strong>creación original protegida por derechos de autor</strong>.<br>Queda <strong>estrictamente prohibida</strong> su reproducción, redistribución o reventa sin autorización escrita.",
   warn_accept:"Aceptar",
   warn_refuse:"Rechazar",
@@ -798,6 +804,7 @@ es:{
 en:{
   warn_title:"Intellectual Property",
   warn_project:"The 7 Gates of Xibalba — © 2026",
+  wm:"© GRASON Sabrina & VEAU Yann · The 7 Gates of Xibalba · Personal Use Only · Not for Reproduction",
   warn_content:"This game is an <strong>original creation protected by copyright</strong>.<br>Any reproduction, redistribution or resale is <strong>strictly prohibited</strong> without written permission.",
   warn_accept:"Accept",
   warn_refuse:"Refuse",
@@ -891,6 +898,14 @@ en:{
 };
 let currentLang = 'fr';
 
+function rebuildWatermark(){
+  try{
+    const w=document.getElementById('wm'); if(!w) return;
+    w.innerHTML='';
+    const t=(I18N[currentLang]&&I18N[currentLang].wm)||I18N.fr.wm;
+    for(let r=-2;r<12;r++)for(let c=-1;c<5;c++){const e=document.createElement('div');e.className='wmt';e.textContent=t;e.style.top=(r*180+c*40)+'px';e.style.left=(c*420-60)+'px';w.appendChild(e);}
+  }catch(e){}
+}
 function applyI18n(){
   const dict = I18N[currentLang];
   document.querySelectorAll('[data-i18n]').forEach(el=>{
@@ -907,6 +922,7 @@ function applyI18n(){
   document.documentElement.lang = currentLang;
   if(navReady) updateDayLabels();
   if(gameFinalMs!==null){ showFinalTime(); updateFelicName(); }
+  rebuildWatermark();
 }
 function setLang(l){ currentLang = l; applyI18n(); }
 
